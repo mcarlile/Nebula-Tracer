@@ -4,7 +4,7 @@ import ddf.minim.*;
 //McKenzie Carlile
 
 PImage img;
-PImage[] images = new PImage[5]; 
+PImage[] images = new PImage[8]; 
 int i = 0;
 int savedTime;
 int savedTime2;
@@ -20,16 +20,9 @@ boolean fire = false;
 boolean engage = true;
 boolean xhasbeenrecorded = false;
 
-Minim minim;
-AudioPlayer bass;
-AudioPlayer wobble;
-
-
 void setup () {
   size(800, 500, P2D);
-  minim = new Minim(this);
-  bass = minim.loadFile("hit.wav");
-  wobble = minim.loadFile("wobble.mp3");
+
 
   noStroke();
   noCursor();
@@ -40,11 +33,14 @@ void setup () {
   images[2] = loadImage("orb3.png");
   images[3] = loadImage("orb4.png");
   images[4] = loadImage("orb5.png");
+  images[5] = loadImage("orb6.png");
+  images[6] = loadImage("orb7.png");
+  images[7] = loadImage("orb8.png");
 
   savedTime = millis();
   img = images [i];
   savedTime2 = millis();
-  wobble.play();
+
   bottom = (7*(height/8));
   left = width/8;
   right =((width/8)*7);
@@ -54,7 +50,7 @@ void draw () {
   img = images [i];
   int passedTime = millis() - savedTime;
   if (passedTime > totalTime) {
-    if (i < 4) {
+    if (i < 6) {
       i++;
     } else {
       i = 0;
@@ -87,7 +83,6 @@ void draw () {
         image (img, right-25, (recordedY), 50, 50);
       }
       if (engage == true) {
-        bass.play();
       }
     }
   }
@@ -104,7 +99,6 @@ void draw () {
   line (left, bottom, right, bottom);
   if (engage == true) {
     if (recordedY > bottom-50) {
-      bass.rewind();
       xhasbeenrecorded = false;
       recordedY = mouseY+50;
       if (mouseX < right-100) {
