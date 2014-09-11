@@ -2,8 +2,6 @@ import ddf.minim.*;
 
 //Assignent 2: Media Arts & Practice 404 Tactical Media
 //McKenzie Carlile
-//bass.wav taken from freesound.org user EKVelika
-//https://www.freesound.org/people/EKVelika/sounds/209571/
 
 PImage img;
 PImage[] images = new PImage[5]; 
@@ -11,17 +9,26 @@ int i = 0;
 int savedTime;
 int savedTime2;
 int totalTime = 50;
-int totalTime2 = 1000;
+int totalTime2 = 2000;
 int orbSpeed = 20;
+int bottom;
+int left;
+int right;
 float recordedX = 0;
 float recordedY = 200;
 boolean fire = false;
+boolean xhasbeenrecorded = false;
+
 Minim minim;
-AudioPlayer player;
+AudioPlayer bass;
+AudioPlayer wobble;
 
 
 void setup () {
   size(800, 500, P2D);
+  minim = new Minim(this);
+  bass = minim.loadFile("bass.wav");
+  wobble = minim.loadFile("wobble.mp3");
 
   noStroke();
   noCursor();
@@ -36,6 +43,11 @@ void setup () {
   savedTime = millis();
   img = images [i];
   savedTime2 = millis();
+  wobble.play();
+  //  bottom = (7*(height/8));
+  bottom = height/2;
+  left = width/8;
+  right =((width/8)*7);
 }
 
 void draw () {
@@ -52,41 +64,64 @@ void draw () {
 
   int passedTime2 = millis() - savedTime2;
   if (passedTime2 > totalTime2) {
-    fire = false;
     savedTime2 = millis();
   } else {
-    recordedX = mouseX;
     fire = true;
   }
 
-  //rect(0, 0, width, height);
-
   //  background (14, 43, 57);  
-  fill(0, 11, 17, 90);
+  fill(0, 11, 17, 50);
+  noStroke();
   rect(0, 0, width, height);
 
-  if (recordedY > 475) {
-    recordedY = 200;
-  }
+  //  if (recordedY > bottom-50) {
+  //    bass.rewind();
+  //    xhasbeenrecorded = false;
+  //    recordedY = 200;
+  //    image (img, recordedX, (bottom-100), 200, 200);
+  //  }
 
 
   if (fire) {
     //float rV = random(-1, 1);
     recordedY = recordedY + orbSpeed;
-    image (img, recordedX+75, (recordedY), 50, 50);
+    if (xhasbeenrecorded == false) {
+      recordedX = mouseX;
+      xhasbeenrecorded = true;
+    }
+    if (mouseX < right-100) {
+      image (img, recordedX+75, (recordedY), 50, 50);
+    } else {
+      image (img, right-25, (recordedY), 50, 50);
+    }
+    //bass.play();
   }
+  if (mouseX < right-100) {
+    image (img, mouseX, mouseY, 200, 200);
+  } else {
+    image (img, right-100, mouseY, 200, 200);
+  }
+  stroke (180, 234, 254);
+  strokeWeight(5);
+  line (left, bottom, right, bottom);
+  if (recordedY > bottom-50) {
+    bass.rewind();
+    xhasbeenrecorded = false;
+    recordedY = mouseY+50;
+    if (mouseX < right-100) {
+      image (img, recordedX, (bottom-100), 200, 200);
+    } else {
+      image (img, right-100, (bottom-100), 200, 200);
+    }
 
-  image (img, mouseX, (height/2-100), 200, 200);
+    println(mouseX);
+  }
 }
 
-void mousePressed () {
-  recordedX = mouseX;
-  fire = true;
-  //fireNewOrb();
-}
+//works cited
 
-void fireNewOrb () {
-  recordedX = mouseX;
-  image (img, recordedX+50, (recordedY++), 50, 50);
-}
+//bass.wav taken from freesound.org user Benboncan
+//https://www.freesound.org/people/Benboncan/sounds/75727/
+//wobble.mp3 taken from freesound.org user Trebblofang
+//https://www.freesound.org/people/Trebblofang/sounds/178113/
 
